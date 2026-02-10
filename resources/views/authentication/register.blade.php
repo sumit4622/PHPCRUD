@@ -35,7 +35,7 @@
     <div class = "container">
 
         <div class = "content">
-            <form action = "{{ 'register.' }}" method="POST">
+            <form action = "{{ 'register.store' }}" method="POST">
                 <div class="row">
                     <div class="col">
                         <input type="text" class="form-control" placeholder="First name">

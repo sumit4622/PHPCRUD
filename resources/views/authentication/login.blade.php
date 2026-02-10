@@ -49,6 +49,8 @@
 
             <a class="btn btn-primary" href="{{ route('authentication.register') }}">Log-in</a>
 
-
         </div>
+
+            <a class="btn btn-primary" href="{{ route('authentication.register') }}">Don't have account</a>
+
     </div>

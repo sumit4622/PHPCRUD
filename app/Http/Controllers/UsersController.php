@@ -22,7 +22,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('authentication.register');
+        // for register
     }
 
     /**
@@ -30,7 +30,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // for register
     }
 
     /**
@@ -38,7 +38,7 @@ class UsersController extends Controller
      */
     public function show(Users $users)
     {
-        //
+        return view('authentication.register');
     }
 
     /**

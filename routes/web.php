@@ -18,15 +18,15 @@ use App\Http\Controllers\UsersController;
 // Route::get('register', [UsersController::class, 'index']);
 
 
-Route::get('login', [UsersController::class, 'index'])->name('authentication.register');
-Route::get('register', [UsersController::class, 'create'])->name('authentication.login');
+Route::get('/', [UsersController::class, 'index'])->name('authentication.login');
+Route::get('/register', [UsersController::class, 'show'])->name('authentication.register');
 
-// Route::post('regist')
-// Route::post('login', UsersController::class);
+Route::post('register', [UsersController::class, 'create'] );
+// Route::post('login', [UsersController::class, '']);
 
-// Route::resource('products', ProductController::class)-> middleware('auth');
+Route::resource('products', ProductController::class)-> middleware('auth');
 
-// Route::post('login', [UsersController::class, 'login']);
+
 
 // Route::get('alubacha/',function(){
 //     return view('temp');
