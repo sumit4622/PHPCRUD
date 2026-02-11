@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
+use Symfony\Component\HttpFoundation\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,9 @@ use App\Http\Controllers\UsersController;
 
 
 Route::get('/', [UsersController::class, 'index'])->name('authentication.login');
-Route::get('/register', [UsersController::class, 'show'])->name('authentication.register');
+Route::get('registertion', [UsersController::class, 'show'])->name('authentication.register');
 
-Route::post('register', [UsersController::class, 'create'] );
+Route::post('register', [UsersController::class, 'store'], ) -> name('authentication.login1');
 // Route::post('login', [UsersController::class, '']);
 
 Route::resource('products', ProductController::class)-> middleware('auth');

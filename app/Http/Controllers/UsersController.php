@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -30,13 +30,25 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        // for register
+        $request -> validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'password' => "required",
+        ]);
+        User::create([
+            'name' => $request->first_name . ' ' .$request->last_name,
+            'email'    => $request->email,
+            'password' => $request->password,
+        ]);
+
+        return redirect()->route('authentication.login')->with('success','Account created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Users $users)
+    public function show(User $user)
     {
         return view('authentication.register');
     }
@@ -44,7 +56,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Users $users)
+    public function edit(User $user)
     {
         //
     }
@@ -52,7 +64,7 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Users $users)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -60,7 +72,7 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Users $users)
+    public function destroy(User $user)
     {
         //
     }
