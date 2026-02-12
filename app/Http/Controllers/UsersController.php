@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;   
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -36,13 +38,18 @@ class UsersController extends Controller
             'email' => 'required',
             'password' => "required",
         ]);
-        User::create([
+        if (User::where('email', $request['email'])->exists()){
+            return redirect()->back()->withErrors(['email' => "Email already exist \n please use another email."]);
+        } else{
+            User::create([
             'name' => $request->first_name . ' ' .$request->last_name,
             'email'    => $request->email,
             'password' => $request->password,
         ]);
 
         return redirect()->route('authentication.login')->with('success','Account created successfully.');
+        }
+        
     }
 
     /**
@@ -58,15 +65,26 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        // 
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function login(Request $request,)
     {
-        //
+        $request -> validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            $request->session()->regenerate();
+            return view('products.index');
+        }else{
+            return redirect()->back()->withErrors(['email' => "account dosn't exist"]);
+        }
+
     }
 
     /**

@@ -22,8 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
 Route::get('/', [UsersController::class, 'index'])->name('authentication.login');
 Route::get('registertion', [UsersController::class, 'show'])->name('authentication.register');
 
-Route::post('register', [UsersController::class, 'store'], ) -> name('authentication.login1');
-// Route::post('login', [UsersController::class, '']);
+Route::post('login/', [UsersController::class, 'login'])->name('products.dashboard');
+Route::post('registertion', [UsersController::class, 'store'], ) -> name('authentication.login1');
+
 
 Route::resource('products', ProductController::class)-> middleware('auth');
 

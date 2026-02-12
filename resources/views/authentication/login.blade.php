@@ -22,29 +22,29 @@
                         <h2 style="font-weight: 700; color: #333; margin-bottom: 5px;">Log - in</h2>
                     </div>
 
-                    <form action="{{route('authentication.login1')}}" method="POST" class = "px-4 py-2">
+                    <form action="{{route('products.dashboard')}}" method="POST" class = "px-4 py-2">
                         @csrf
 
                         <div class="form-group text-left mb-3">
                             <label class="font-weight-bold text-uppercase">Email Address</label>
-                            <input type="text" class="form-control form-control-lg" placeholder="Example@gmail.com">
+                            <input type="text" name = "email" class="form-control form-control-lg" placeholder="Example@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$>
 
                         </div>
 
                         <div class="form-group text-left mb-4">
                             <label class="font-weight-bold text-uppercase">Password</label>
-                            <input type="text" class="form-control form-control-lg" placeholder="********">
+                            <input type="password" name = "password" class="form-control form-control-lg" placeholder="********">
 
                         </div>
 
                         <button type="submit" class="btn btn-primary text-white font-weight-bold py-2">
-                            REGISTER NOW
+                            Login
                         </button>
                     </form>
 
                     <p class="font-weight-bold text-primary">
                         Don't have account?
-                        <a href="{{ route('authentication.register') }}">register</a>
+                        <a href="{{ route('authentication.register') }}">register here</a>
                     </p>
                 </div>
             </div>

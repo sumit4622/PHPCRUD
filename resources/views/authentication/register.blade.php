@@ -36,7 +36,7 @@
 
                         <div class="form-group text-left mb-3">
                             <label class="font-weight-bold text-uppercase">Email Address</label>
-                            <input type="text" name="email"class="form-control form-control-lg" placeholder="Example@gmail.com">
+                            <input type="text" name="email"class="form-control form-control-lg" placeholder="Example@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$>
 
                         </div>
 
