@@ -80,8 +80,8 @@ class UsersController extends Controller
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $request->session()->regenerate();
-            return view('products.index');
-        }else{
+            return redirect()->route('products.index');        
+            }else{
             return redirect()->back()->withErrors(['email' => "account dosn't exist"]);
         }
 

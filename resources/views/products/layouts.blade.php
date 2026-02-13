@@ -1,45 +1,53 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel 8 CRUD - Navbar Fix</title>
 
-    <title>Laravel 8 CRUD Application - ItSolutionStuff.com</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css" rel="stylesheet">
-
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { z-index: 1050; } /* Ensures navbar stays on top */
+    </style>
 </head>
-
 <body>
-    <div class="">
-        <nav class="navbar navbar-expand-lg bg-primary mb-3 mt-3">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
-                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">My Application</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">Dashboard</span></a>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('products.index') }}">Home</a>
                     </li>
-                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Products</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav ml-auto">
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
-        </nav>
-    </div>
-
-
+        </div>
+    </nav>
 
     <div class="container">
-
         @yield('content')
-
     </div>
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

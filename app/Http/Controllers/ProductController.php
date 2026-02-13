@@ -13,7 +13,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderBy('created_at') -> paginate(5);
+        $products = Product::where(
+            'user_id', auth()->id()) 
+            -> orderBy('created_at')
+            -> paginate(5);
 
         return view('products.index', compact('products'))
         -> with('i', (request() -> input('page', 1)-1)*5);
@@ -38,7 +41,10 @@ class ProductController extends Controller
             'details' => 'required',
         ]);
 
-        Product::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+
+        Product::create($data);
 
         return redirect()->route('products.index')
         -> with('success', 'Product created successfully.');
