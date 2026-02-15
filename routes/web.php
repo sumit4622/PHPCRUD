@@ -23,7 +23,9 @@ Route::get('/', [UsersController::class, 'index'])->name('authentication.login')
 Route::get('registertion', [UsersController::class, 'show'])->name('authentication.register');
 
 Route::post('login/', [UsersController::class, 'login'])->name('products.dashboard');
-Route::post('registertion', [UsersController::class, 'store'], ) -> name('authentication.login1');
+Route::post('registertion', [UsersController::class, 'store'] ) -> name('authentication.login1');
+
+Route::post('/logout', [UsersController::class, 'logout'])->name('user.logout');
 
 
 Route::resource('products', ProductController::class)-> middleware('auth');
