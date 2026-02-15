@@ -39,10 +39,13 @@ class ProductController extends Controller
         $request -> validate([
             'name' => 'required',
             'details' => 'required',
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
         ]);
 
         $data = $request->all();
         $data['user_id'] = auth()->id();
+
+        $data = $request->file('image')->store('uploads', 'public');
 
         Product::create($data);
 

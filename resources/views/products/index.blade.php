@@ -37,6 +37,8 @@
 
             <th>No</th>
 
+            <th>Image</th>
+
             <th>Name</th>
 
             <th>Details</th>
@@ -50,6 +52,8 @@
         <tr>
 
             <td>{{ ++$i }}</td>
+
+            <td>{{$product->image}}</td>
 
             <td>{{ $product->name }}</td>
 
