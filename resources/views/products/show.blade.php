@@ -32,8 +32,7 @@
 
                 <strong>Photo:</strong>
 
-                {{ $product->image }}
-
+                <img src="{{ asset('storage/' . $product->image) }}" width="200" />
             </div>
 
         </div>

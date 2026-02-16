@@ -44,7 +44,7 @@
 
 
 
-    <form action="{{ route('products.update', $product->id) }}" method="POST">
+    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
 
         @csrf
 
@@ -60,8 +60,8 @@
 
                     <strong>Photo:</strong>
 
-                    {{ $product->image }}
-
+                    <img src="{{ asset('storage/' . $product->image) }}" width="200">
+                    
                     <input type="file" name="image" class="form-control" placeholder="image">
 
 

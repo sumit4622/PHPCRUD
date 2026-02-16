@@ -39,13 +39,13 @@ class ProductController extends Controller
         $request -> validate([
             'name' => 'required',
             'details' => 'required',
-            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = $request->all();
         $data['user_id'] = auth()->id();
 
-        $data = $request->file('image')->store('uploads', 'public');
+        $data['image'] = $request->file('image')->store('uploads', 'public');
 
         Product::create($data);
 
@@ -79,10 +79,16 @@ class ProductController extends Controller
 
             'name' => 'required',
             'details' => 'required',
-
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $product->update($request->all());
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')){
+            $data['image'] = $request ->file('image')->store('uploads', 'public');
+        }
+        $product->update($data);
+        dd($data);
 
         return redirect()->route('products.index')
         ->with('success','Product updated successfully');
