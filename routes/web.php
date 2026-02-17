@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AdminController;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
@@ -32,8 +33,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('products', ProductController::class);
 });
 
+Route::middleware(['admin'])->group(function () {
+    Route::resource('admin-dashboard', AdminController::class);
+    
+});
 
 
-// Route::get('alubacha/',function(){
-//     return view('temp');
-// });
+
+
