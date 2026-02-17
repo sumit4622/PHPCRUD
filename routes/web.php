@@ -28,7 +28,9 @@ Route::post('registertion', [UsersController::class, 'store'] ) -> name('authent
 Route::post('/logout', [UsersController::class, 'logout'])->name('user.logout');
 
 
-Route::resource('products', ProductController::class)-> middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('products', ProductController::class);
+});
 
 
 
