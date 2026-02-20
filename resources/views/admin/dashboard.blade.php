@@ -1,36 +1,47 @@
 @extends('admin.layout')
 
 @section('content')
-<div class="container">
-    <div class="row mb-3 ">
-        <div class="col-md-6 ">
-            <div class="card bg-primary text-white h-100 ">
-                <div class="card-body text-center btn btn-primary">
-                    <h5 class="card-title">Active Users</h5>
-                    <p class="card-text h2">5</p>
-                </div>
-            </div>
-        </div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
 
-        <div class="col-md-6">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body text-center btn btn-primary">
-                    <h5 class="card-title">Pending Tasks</h5>
-                    <p class="card-text h2">12</p>
-                </div>
-            </div>
-        </div>
-    </div>
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center btn btn-primary">
-                    <h5 class="card-title">System Status</h5>
-                    <p class="card-text h2">Healthy</p>
-                </div>
-            </div>
+            <ul>
+
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+
+            </ul>
+
         </div>
+    @endif
+    <div class="container">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col"> Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($users as $user)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $user->name }}</td>
+
+                        <td>
+                            <form action="{{ route('AdminDashboard.destroy', $user->id) }}" method="POST">
+                                <a href="{{ route('AdminDashboard.show', $user->id) }}" class="btn btn-sm btn-info">view</a>
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete User</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-</div>
 @endsection

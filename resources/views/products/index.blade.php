@@ -1,7 +1,6 @@
 @extends('products.layouts')
 
 @section('content')
-
     <div class="row">
 
         <div class="col-lg-12 margin-tb">
@@ -17,84 +16,79 @@
 
     </div>
 
-   
+
 
     @if ($message = Session::get('success'))
-
         <div class="alert alert-success">
 
             <p>{{ $message }}</p>
 
         </div>
-
     @endif
 
-   
+
 
     <table class="table table-bordered">
+        <thead class="thead-dark">
 
-        <tr>
+            <tr>
 
-            <th>No</th>
+                <th>No</th>
 
-            <th>Image</th>
+                <th>Image</th>
 
-            <th>Name</th>
+                <th>Name</th>
 
-            <th>Details</th>
+                <th>Details</th>
 
-            <th width="280px">Action</th>
+                <th width="280px">Action</th>
 
-        </tr>
+            </tr>
+        </thead>
 
         @foreach ($products as $product)
+            <tr>
 
-        <tr>
+                <td>{{ ++$i }}</td>
 
-            <td>{{ ++$i }}</td>
+                <td><img src="{{ asset('storage/' . $product->image) }}" width="200"></td>
 
-            <td><img src="{{ asset('storage/' . $product->image) }}" width="200"></td>
+                <td>{{ $product->name }}</td>
 
-            <td>{{ $product->name }}</td>
+                <td>{{ $product->details }}</td>
 
-            <td>{{ $product->details }}</td>
+                <td>
 
-            <td>
+                    <form action="{{ route('products.destroy', $product->id) }}" method="POST">
 
-                <form action="{{ route('products.destroy',$product->id) }}" method="POST">
 
-   
 
-                    <a class="btn btn-info" href="{{ route('products.show',$product->id) }}">Show</a>
+                        <a class="btn btn-info" href="{{ route('products.show', $product->id) }}">Show</a>
 
-    
 
-                    <a class="btn btn-primary" href="{{ route('products.edit',$product->id) }}">Edit</a>
 
-   
+                        <a class="btn btn-primary" href="{{ route('products.edit', $product->id) }}">Edit</a>
 
-                    @csrf
 
-                    @method('DELETE')
 
-      
+                        @csrf
 
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                        @method('DELETE')
 
-                </form>
 
-            </td>
 
-        </tr>
+                        <button type="submit" class="btn btn-danger">Delete</button>
 
+                    </form>
+
+                </td>
+
+            </tr>
         @endforeach
 
     </table>
 
-  
+
 
     {!! $products->links() !!}
-
-      
-
 @endsection

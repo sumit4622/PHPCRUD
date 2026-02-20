@@ -81,7 +81,7 @@ class UsersController extends Controller
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             if(auth()->user()->is_admin == true){
                 $request->session()->regenerate();
-                return redirect()->route('admin-dashboard.index');
+                return redirect()->route('AdminDashboard.index');
             }
             $request->session()->regenerate();
             return redirect()->route('products.index');        
