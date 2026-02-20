@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['admin'])->group(function () {
-    Route::resource('admin-dashboard', AdminController::class);
+    Route::resource('AdminDashboard', AdminController::class);
     
 });
 
