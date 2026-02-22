@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['admin'])->group(function () {
     Route::resource('AdminDashboard', AdminController::class);
+    Route::delete('AdminDashboard/{user_id}/item/{item_id}', [AdminController::class, 'delete_item'])->name('user.item.delete');
     
 });
 

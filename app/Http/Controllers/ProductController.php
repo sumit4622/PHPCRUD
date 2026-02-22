@@ -88,7 +88,7 @@ class ProductController extends Controller
             $data['image'] = $request ->file('image')->store('uploads', 'public');
         }
         $product->update($data);
-        dd($data);
+        // dd($data);
 
         return redirect()->route('products.index')
         ->with('success','Product updated successfully');
