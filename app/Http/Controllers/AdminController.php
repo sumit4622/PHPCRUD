@@ -24,12 +24,11 @@ class AdminController extends Controller
 
     public function show(User $AdminDashboard)
     {
-        try {
-            $view_product = Product::where('user_id', $AdminDashboard->id)->get();
-            return view('admin.view', compact('view_product'));
-        } catch (\Throwable $th) {
-            return view('admin.view', compact('soory nothing is here.'));
-        }
+        // dd($AdminDashboard);
+        $user = $AdminDashboard;
+        // dd($user);
+        $view_product = Product::where('user_id', $AdminDashboard->id)->get();
+        return view('admin.view', compact('view_product', 'user'));
     }
 
     public function edit(Product $AdminDashboard)
@@ -53,8 +52,14 @@ class AdminController extends Controller
 
         $AdminDashboard->update($data);
 
-        return redirect()
-            ->route('AdminDashboard.index') 
-            ->with('success', 'Product updated successfully');
+        return redirect()->route('AdminDashboard.index')->with('success', 'Product updated successfully');
+    }
+
+    public function delete_item($user_id, $item_id)
+    {
+        $product = Product::where('id', $item_id)->where('user_id', $user_id)->firstOrFail();
+        $product->delete();
+
+        return back()->with('success', 'Item deleted!');
     }
 }
