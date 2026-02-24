@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AdminController extends Controller
@@ -24,16 +25,15 @@ class AdminController extends Controller
 
     public function show(User $AdminDashboard)
     {
-        // dd($AdminDashboard);
         $user = $AdminDashboard;
-        // dd($user);
         $view_product = Product::where('user_id', $AdminDashboard->id)->get();
         return view('admin.view', compact('view_product', 'user'));
     }
 
-    public function edit(Product $AdminDashboard)
+    public function edit($id)
     {
-        return view('admin.edit', ['product' => $AdminDashboard]);
+        $product = Product::findOrFail($id);
+        return view('admin.edit', compact('product'));
     }
 
     public function update(Request $request, Product $AdminDashboard)
@@ -57,9 +57,36 @@ class AdminController extends Controller
 
     public function delete_item($user_id, $item_id)
     {
+        // dd($item_id,$user_id);
         $product = Product::where('id', $item_id)->where('user_id', $user_id)->firstOrFail();
         $product->delete();
 
         return back()->with('success', 'Item deleted!');
+    }
+
+    public function get_username($user_id)
+    {
+        $user = User::where('id', $user_id)->first();
+        $firstName = Str::beforeLast($user->name, ' ');
+        $lastName = Str::afterLast($user->name, ' ');
+        return view('admin.useredit', compact('user', 'firstName', 'lastName'));
+    }
+
+    public function edit_user_profile(Request $request, $user_id)
+    {
+
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email:rfc,dns',
+        ]);
+
+        $user = User::findOrFail($user_id);
+
+        $user->name = $request->first_name . ' ' . $request->last_name;
+        $user->email = $request->email;
+
+        $user->save();
+        return back()->with('success', 'Profile updated!');
     }
 }

@@ -21,7 +21,7 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link " href="{{ route('products.create') }}"> Dashboard </a>
+                        <a class="nav-link " href="{{ route('AdminDashboard.index') }}"> Dashboard </a>
                     </li>
                 </ul>
                 <form method="post" action="{{route('user.logout')}}">

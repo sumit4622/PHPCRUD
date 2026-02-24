@@ -1,4 +1,4 @@
-@extends('products.layouts')
+@extends('admin.layout')
 
 
 
@@ -16,7 +16,7 @@
 
             <div class="pull-right">
 
-                <a class="btn btn-primary" href="{{ route('AdminDashboard.show', $product->id) }}"> Back</a>
+                <a class="btn btn-primary" href="{{ route('AdminDashboard.index', $product->id) }}"> Back</a>
 
             </div>
 
