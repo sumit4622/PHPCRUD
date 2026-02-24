@@ -19,15 +19,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Route::get('register', [UsersController::class, 'index']);
 
-
 Route::get('/', [UsersController::class, 'index'])->name('authentication.login');
 Route::get('registertion', [UsersController::class, 'show'])->name('authentication.register');
 
 Route::post('login/', [UsersController::class, 'login'])->name('products.dashboard');
-Route::post('registertion', [UsersController::class, 'store'] ) -> name('authentication.login1');
+Route::post('registertion', [UsersController::class, 'store'])->name('authentication.login1');
 
 Route::post('/logout', [UsersController::class, 'logout'])->name('user.logout');
-
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('products', ProductController::class);
@@ -36,9 +34,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['admin'])->group(function () {
     Route::resource('AdminDashboard', AdminController::class);
     Route::delete('AdminDashboard/{user_id}/item/{item_id}', [AdminController::class, 'delete_item'])->name('user.item.delete');
-    
+    Route::get('Useredit/{user_id}/', [AdminController::class, 'get_username'])->name('user.edit');
+    Route::patch('Userupdate/{user_id}/', [AdminController::class, 'edit_user_profile'])->name('user.update.profile');
 });
-
-
-
-

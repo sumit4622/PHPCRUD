@@ -34,6 +34,8 @@
                         <td>
                             <form action="{{ route('AdminDashboard.destroy', $user->id) }}" method="POST">
                                 <a href="{{ route('AdminDashboard.show', $user->id) }}" class="btn btn-sm btn-info">view</a>
+                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-info">Edit User Profile</a>
+
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Delete User</button>
