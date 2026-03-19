@@ -5,88 +5,134 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
-use Illuminate\Support\Str;
-use Mockery\Generator\StringManipulation\Pass\Pass;
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateUserProfileRequest;
+use App\Services\admin\AdminService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminController extends Controller
 {
+    protected $adminService;
+
+    public function __construct(AdminService $adminService)
+    {
+        $this->adminService = $adminService;
+    }
     public function index(Request $request)
     {
-        $users = User::where('is_admin', false)->get();
+        try {
+            //code...
+            $users = User::where('is_admin', false)->get();
+
+            return $this->success($users, 'User fetch Successfully', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'Server error', 500);
+        }
+
         return view('admin.dashboard', compact('users'));
     }
 
     public function destroy(User $AdminDashboard)
     {
-        $AdminDashboard->delete();
+        try {
+            //code...
+            $deleteuser = $AdminDashboard->delete();
+            return $this->success($deleteuser, 'User delete successfully', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'server Error', 500);
+        }
 
         return redirect()->route('AdminDashboard.index')->with('sucess', 'user delete successfully');
     }
 
     public function show(User $AdminDashboard)
     {
-        $user = $AdminDashboard;
-        $view_product = Product::where('user_id', $AdminDashboard->id)->get();
-        return view('admin.view', compact('view_product', 'user'));
+        try {
+            //code...
+            $view_product = Product::where('user_id', $AdminDashboard->id)->get();
+
+            return $this->success($view_product, 'Product review', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'Server error', 500);
+        }
     }
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
-        return view('admin.edit', compact('product'));
-    }
+        try {
+            //code...
+            $product = Product::findOrFail($id);
 
-    public function update(Request $request, Product $AdminDashboard)
-    {
-        $request->validate([
-            'name' => 'required',
-            'details' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $data = $request->except('image');
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('uploads', 'public');
+            return $this->success($product, 'edit successfully' , 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(),'Server Error',500);
         }
-
-        $AdminDashboard->update($data);
-
-        return redirect()->route('AdminDashboard.index')->with('success', 'Product updated successfully');
+        
     }
 
-    public function delete_item($user_id, $item_id)
+    public function update(StoreProductRequest $request, Product $AdminDashboard)
     {
-        // dd($item_id,$user_id);
-        $product = Product::where('id', $item_id)->where('user_id', $user_id)->firstOrFail();
-        $product->delete();
+        try {
+            $validationdata = $request->validated();
+            $image = $request->file('image');
+
+            $updatedata = $this->adminService->updatedata($validationdata, $image, $AdminDashboard);
+
+            return $this->success($updatedata, 'Product updated successfully ', 200);
+        } catch (\Throwable $th) {
+            $this->error($th->getMessage(), 'Server error', 500);
+        }
+    }
+
+    public function delete_item($userId, $itemId)
+    {
+        try {
+            //code...
+            $deleteproduct = $this->adminService->deleteuser($userId, $itemId);
+
+            return $this->success(null, 'Item deleted successfully', 200);
+        } catch (ModelNotFoundException $th) {
+            return $this->error($th->getMessage(), 'not found', 404);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'server error', 500);
+        }
 
         return back()->with('success', 'Item deleted!');
     }
 
-    public function get_username($user_id)
+    public function get_username($userId)
     {
-        $user = User::where('id', $user_id)->first();
-        $firstName = Str::beforeLast($user->name, ' ');
-        $lastName = Str::afterLast($user->name, ' ');
-        return view('admin.useredit', compact('user', 'firstName', 'lastName'));
+        // $user = User::where('id', $userId)->first();
+        // $firstName = Str::beforeLast($user->name, ' ');
+        // $lastName = Str::afterLast($user->name, ' ');
+        // return view('admin.useredit', compact('user', 'firstName', 'lastName'));
+
+        try {
+            //code...
+           $profiledata = $this->adminService->getUserProfileData($userId);
+
+           return $this->success($profiledata, 'user data fetch', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(),'server error',500);
+        }
     }
 
-    public function edit_user_profile(Request $request, $user_id)
+    public function edit_user_profile(UpdateUserProfileRequest $request, $userId)
     {
+        try {
+            $user = $this->adminService->updateProfile($userId, $request->validated());
 
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email:rfc,dns',
-        ]);
-
-        $user = User::findOrFail($user_id);
-
-        $user->name = $request->first_name . ' ' . $request->last_name;
-        $user->email = $request->email;
-
-        $user->save();
-        return back()->with('success', 'Profile updated!');
+            return $this->success($user, 'Profile updated successfully', 200);
+        } catch (ModelNotFoundException $th) {
+            return $this->error('User not found', 'Not Found', 404);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 'Server Error', 500);
+        }
     }
 }

@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 // Route::get('register', [UsersController::class, 'index']);
 
 Route::get('/', [UsersController::class, 'index'])->name('authentication.login');
-Route::get('registertion', [UsersController::class, 'show'])->name('authentication.register');
+Route::get('registertion/', [UsersController::class, 'show'])->name('authentication.register');
 
 Route::post('login/', [UsersController::class, 'login'])->name('products.dashboard');
 Route::post('registertion', [UsersController::class, 'store'])->name('authentication.login1');

@@ -5,22 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\View\Component;
+use App\Services\Product\ProductService;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
+use League\Config\Exception\ValidationException;
 
 class ProductController extends Controller
 {
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::where(
-            'user_id', auth()->id()) 
-            -> orderBy('created_at')
-            -> paginate(5);
+        try {
+            //code...
+            $product = $this->productService->getdata(5);
 
-        return view('products.index', compact('products'))
-        -> with('i', (request() -> input('page', 1)-1)*5);
-
+            return $this->success($product, 'fetch product Successfully.', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'server Error', 500);
+        }
     }
 
     /**
@@ -34,23 +45,18 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request -> validate([
-            'name' => 'required',
-            'details' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        try {
+            //code...
+            $data = $request->validated();
+            $product = $this->productService->create($data, $request->file('image'));
 
-        $data = $request->all();
-        $data['user_id'] = auth()->id();
-
-        $data['image'] = $request->file('image')->store('uploads', 'public');
-
-        Product::create($data);
-
-        return redirect()->route('products.index')
-        -> with('success', 'Product created successfully.');
+            return $this->success($product, 'created the product', 201);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'server Error', 500);
+        }
     }
 
     /**
@@ -72,26 +78,25 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product,)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        
-        $request->validate([
-
-            'name' => 'required',
-            'details' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
-
-        $data = $request->except('image');
-
-        if ($request->hasFile('image')){
-            $data['image'] = $request ->file('image')->store('uploads', 'public');
+        if ($product->user_id !== auth()->id()) {
+            return $this->error(null, 'Unauthorized action', 403);
         }
-        $product->update($data);
-        // dd($data);
 
-        return redirect()->route('products.index')
-        ->with('success','Product updated successfully');
+        try {
+            $data = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image')->store('uploads', 'public');
+            }
+
+            $updatedProduct = $this->productService->update($product, $data);
+
+            return $this->success($updatedProduct, 'Product updated successfully', 200);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 'Server Error', 500);
+        }
     }
 
     /**
@@ -99,9 +104,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product -> delete();
+        try {
+            //code...
+            $delete = $product->delete();
 
-        return redirect() -> route('products.index')
-        ->with('sucess' , 'product delete successfully');
+            return $this->success(null, 'Item delete sucessfully', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'Delete failed', 500);
+        }
     }
 }

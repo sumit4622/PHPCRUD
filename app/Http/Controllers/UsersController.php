@@ -4,19 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;   
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Auth\UserRequest;
+use App\Http\Requests\Auth\RegistrationRequest;
+use App\Services\Auth\AuthService;
+use App\Services\Auth\RegisterService;
+use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
 {
+    protected $authService;
+    protected $registerService;
+
+    public function __construct(AuthService $authService, RegisterService $registerService)
+    {
+        $this->authService = $authService;
+        $this->registerService = $registerService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
         return view('authentication.login');
-
     }
 
     /**
@@ -30,26 +42,21 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RegistrationRequest $request)
     {
-        $request -> validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email:rfc,dns',
-            'password' => "required",
-        ]);
-        if (User::where('email', $request['email'])->exists()){
-            return redirect()->back()->withErrors(['email' => "Email already exist \n please use another email."]);
-        } else{
-            User::create([
-            'name' => $request->first_name . ' ' .$request->last_name,
-            'email'    => $request->email,
-            'password' => $request->password,
-        ]);
+        $userdetails = $request->validated();
 
-        return redirect()->route('authentication.login')->with('success','Account created successfully.');
+        try {
+            //code...
+            $this->registerService->Register($userdetails);
+
+            return $this->success($userdetails, 'User register Successfully.', 201);
+        } catch (ValidationException $th) {
+            return $this->error('Validation Error', $th->errors(), 422);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'server Error', 500);
         }
-        
     }
 
     /**
@@ -65,30 +72,26 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        // 
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function login(Request $request,)
+    public function login(UserRequest $request)
     {
-        $request -> validate([
-            'email' => 'required',
-            'password' => 'required',
-        ]);
+        $cred = $request->validated();
 
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            if(auth()->user()->is_admin == true){
-                $request->session()->regenerate();
-                return redirect()->route('AdminDashboard.index');
-            }
-            $request->session()->regenerate();
-            return redirect()->route('products.index');        
-            }else{
-            return redirect()->back()->withErrors(['email' => "account dosn't exist"]);
+        try {
+            //code...
+            $user = $this->authService->login($cred);
+
+            return $this->success($user, 'User logged in successfully.', 200);
+        } catch (ValidationException $e) {
+            return $this->error('Validation Error', $e->errors(), 422);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 'Server Error', 500);
         }
-
     }
 
     /**
@@ -96,7 +99,14 @@ class UsersController extends Controller
      */
     public function logout(request $request)
     {
-        Auth::logout();
-        return redirect()->route('authentication.login');
+        try {
+            //code...
+            $request->user()->currentAccessToken()->delete();
+
+            return $this->success(null, 'Logged out successfully. Token revoked.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error($th->getMessage(), 'logout failed', 500);
+        }
     }
 }
